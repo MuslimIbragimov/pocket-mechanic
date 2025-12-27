@@ -1,0 +1,17 @@
+<Content>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PocketMechanic.Views.MainView"
+             Title="Main View">
+
+    <StackLayout Padding="20">
+        <Label Text="Welcome to the Main View!"
+               FontSize="24"
+               HorizontalOptions="Center" />
+        <Button Text="Click Me"
+                Command="{Binding ClickCommand}"
+                HorizontalOptions="Center" />
+    </StackLayout>
+
+</ContentPage>
+</Content>
