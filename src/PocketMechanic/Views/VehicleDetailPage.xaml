@@ -11,7 +11,10 @@
         <ScrollView>
             <StackLayout Padding="20" Spacing="20">
                 <!-- Vehicle Info Card -->
-                <Frame HasShadow="True" CornerRadius="10" Padding="15">
+                <Border StrokeThickness="0" Padding="15" StrokeShape="RoundRectangle 10">
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Opacity="0.3" Radius="10" Offset="0,2" />
+                    </Border.Shadow>
                     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="10">
                         <Label Grid.Row="0" 
                                Text="{Binding Vehicle.DisplayName}"
@@ -60,7 +63,7 @@
                                     Padding="5"/>
                         </Grid>
                     </Grid>
-                </Frame>
+                </Border>
 
                 <!-- Overdue Items -->
                 <StackLayout IsVisible="{Binding HasOverdueItems}">
@@ -71,11 +74,11 @@
                     <CollectionView ItemsSource="{Binding OverdueItems}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:MaintenanceRecord">
-                                <Frame Margin="0,5" Padding="10" BackgroundColor="#FFEBEE" HasShadow="False">
-                                    <Frame.GestureRecognizers>
+                                <Border Margin="0,5" Padding="10" BackgroundColor="#FFEBEE" StrokeThickness="0">
+                                    <Border.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:VehicleDetailViewModel}}, Path=SelectMaintenanceCommand}"
                                                               CommandParameter="{Binding .}"/>
-                                    </Frame.GestureRecognizers>
+                                    </Border.GestureRecognizers>
                                     <Grid ColumnDefinitions="*,Auto">
                                         <StackLayout Grid.Column="0">
                                             <Label Text="{Binding MaintenanceType}" FontAttributes="Bold"/>
@@ -84,7 +87,7 @@
                                         </StackLayout>
                                         <Label Grid.Column="1" Text="›" FontSize="24" TextColor="Gray" VerticalOptions="Center"/>
                                     </Grid>
-                                </Frame>
+                                </Border>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
@@ -99,11 +102,11 @@
                     <CollectionView ItemsSource="{Binding DueSoonItems}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:MaintenanceRecord">
-                                <Frame Margin="0,5" Padding="10" BackgroundColor="#FFF3E0" HasShadow="False">
-                                    <Frame.GestureRecognizers>
+                                <Border Margin="0,5" Padding="10" BackgroundColor="#FFF3E0" StrokeThickness="0">
+                                    <Border.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:VehicleDetailViewModel}}, Path=SelectMaintenanceCommand}"
                                                               CommandParameter="{Binding .}"/>
-                                    </Frame.GestureRecognizers>
+                                    </Border.GestureRecognizers>
                                     <Grid ColumnDefinitions="*,Auto">
                                         <StackLayout Grid.Column="0">
                                             <Label Text="{Binding MaintenanceType}" FontAttributes="Bold"/>
@@ -112,7 +115,7 @@
                                         </StackLayout>
                                         <Label Grid.Column="1" Text="›" FontSize="24" TextColor="Gray" VerticalOptions="Center"/>
                                     </Grid>
-                                </Frame>
+                                </Border>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
@@ -142,11 +145,11 @@
                                     IsVisible="{Binding HasMaintenanceHistory}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:MaintenanceRecord">
-                                <Frame Margin="0,5" Padding="10" HasShadow="False" BorderColor="LightGray">
-                                    <Frame.GestureRecognizers>
+                                <Border Margin="0,5" Padding="10" Stroke="LightGray" StrokeThickness="1">
+                                    <Border.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:VehicleDetailViewModel}}, Path=SelectMaintenanceCommand}"
                                                               CommandParameter="{Binding .}"/>
-                                    </Frame.GestureRecognizers>
+                                    </Border.GestureRecognizers>
                                     <Grid ColumnDefinitions="*,Auto">
                                         <StackLayout Grid.Column="0">
                                             <Label Text="{Binding MaintenanceType}" FontAttributes="Bold"/>
@@ -158,7 +161,7 @@
                                         </StackLayout>
                                         <Label Grid.Column="1" Text="›" FontSize="24" TextColor="Gray" VerticalOptions="Center"/>
                                     </Grid>
-                                </Frame>
+                                </Border>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
