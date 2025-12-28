@@ -13,4 +13,8 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\PocketMechanic\PocketMechanic.csproj" />
+  </ItemGroup>
+
 </Project>

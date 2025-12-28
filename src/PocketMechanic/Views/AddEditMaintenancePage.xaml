@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:PocketMechanic.ViewModels"
+             xmlns:models="clr-namespace:PocketMechanic.Models"
+             x:Class="PocketMechanic.Views.AddEditMaintenancePage"
+             x:DataType="viewmodels:AddEditMaintenanceViewModel"
+             Title="{Binding PageTitle}">
+
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="15">
+            <!-- Maintenance Type -->
+            <Label Text="Maintenance Type *" FontAttributes="Bold"/>
+            <Picker ItemsSource="{Binding MaintenanceTypes}"
+                    ItemDisplayBinding="{Binding Name}"
+                    SelectedItem="{Binding SelectedMaintenanceType}"
+                    Title="Select Type"/>
+
+            <!-- Date Performed -->
+            <Label Text="Date Performed *" FontAttributes="Bold"/>
+            <DatePicker Date="{Binding DatePerformed}"
+                        Format="MM/dd/yyyy"
+                        MaximumDate="{x:Static x:DateTime.Today}"/>
+
+            <!-- Mileage at Service -->
+            <Label Text="Mileage at Service *" FontAttributes="Bold"/>
+            <Entry Text="{Binding MileageAtService}" 
+                   Placeholder="e.g., 50000" 
+                   Keyboard="Numeric"/>
+
+            <!-- Next Due Date -->
+            <Label Text="Next Due Date (Auto-calculated)" FontAttributes="Bold"/>
+            <DatePicker Date="{Binding NextDueDate}"
+                        Format="MM/dd/yyyy"
+                        MinimumDate="{x:Static x:DateTime.Today}"/>
+
+            <!-- Next Due Mileage -->
+            <Label Text="Next Due Mileage (Auto-calculated)" FontAttributes="Bold"/>
+            <Entry Text="{Binding NextDueMileage}" 
+                   Placeholder="e.g., 55000" 
+                   Keyboard="Numeric"/>
+
+            <!-- Cost -->
+            <Label Text="Cost (Optional)" FontAttributes="Bold"/>
+            <Entry Text="{Binding Cost}" 
+                   Placeholder="e.g., 45.99" 
+                   Keyboard="Numeric"/>
+
+            <!-- Notes -->
+            <Label Text="Notes (Optional)" FontAttributes="Bold"/>
+            <Editor Text="{Binding Notes}" 
+                    Placeholder="Add any notes about this maintenance..."
+                    HeightRequest="100"/>
+
+            <!-- Buttons -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,20,0,0">
+                <Button Grid.Column="0" 
+                        Text="Cancel" 
+                        Command="{Binding CancelCommand}"
+                        BackgroundColor="LightGray"
+                        TextColor="Black"/>
+                <Button Grid.Column="1" 
+                        Text="Save" 
+                        Command="{Binding SaveCommand}"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White"/>
+            </Grid>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

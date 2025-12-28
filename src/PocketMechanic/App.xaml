@@ -1,5 +1,18 @@
-<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <Application.Resources>
-    <!-- Application resource dictionary can be defined here -->
-  </Application.Resources>
+<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:PocketMechanic.Converters"
+             x:Class="PocketMechanic.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- Colors -->
+            <Color x:Key="Primary">#2196F3</Color>
+            <Color x:Key="Secondary">#FFC107</Color>
+            <Color x:Key="Accent">#FF5722</Color>
+            
+            <!-- Converters -->
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
+            <converters:StringNotNullOrEmptyConverter x:Key="StringNotNullOrEmptyConverter"/>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

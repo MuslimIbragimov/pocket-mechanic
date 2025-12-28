@@ -1,31 +1,32 @@
 using NUnit.Framework;
 using PocketMechanic.ViewModels;
+using PocketMechanic.Services;
 
 namespace PocketMechanic.Tests
 {
     [TestFixture]
-    public class MainViewModelTests
+    public class GarageViewModelTests
     {
-        private MainViewModel _viewModel;
+        private GarageViewModel _viewModel;
+        private DatabaseService _databaseService;
 
         [SetUp]
         public void Setup()
         {
-            _viewModel = new MainViewModel();
+            _databaseService = new DatabaseService();
+            _viewModel = new GarageViewModel(_databaseService);
         }
 
         [Test]
         public void Test_InitialState()
         {
-            // Arrange
-
-            // Act
-
+            // Arrange & Act
             // Assert
             Assert.IsNotNull(_viewModel);
-            // Add more assertions based on the initial state of MainViewModel
+            Assert.IsNotNull(_viewModel.Vehicles);
+            Assert.AreEqual(0, _viewModel.Vehicles.Count);
         }
 
-        // Add more tests for MainViewModel methods and properties
+        // Add more tests for GarageViewModel methods and properties
     }
 }

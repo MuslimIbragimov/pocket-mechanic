@@ -1,3 +1,4 @@
+using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 
 namespace PocketMechanic
@@ -7,7 +8,11 @@ namespace PocketMechanic
         public App()
         {
             InitializeComponent();
-            MainPage = new MainPage();
+        }
+
+        protected override Window CreateWindow(IActivationState activationState)
+        {
+            return new Window(new AppShell());
         }
     }
 }
