@@ -7,62 +7,53 @@
              x:DataType="viewmodels:GarageViewModel"
              Title="My Garage">
 
-    <Grid RowDefinitions="Auto,*">
-        <!-- Header -->
-        <Grid Grid.Row="0" Padding="20,10" BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Primary}}">
-            <Label Text="My Garage" 
-                   FontSize="28" 
-                   FontAttributes="Bold"
-                   TextColor="White"
-                   VerticalOptions="Center"/>
-            <Button Text="+" 
-                    FontSize="32"
-                    WidthRequest="50"
-                    HeightRequest="50"
-                    CornerRadius="25"
-                    BackgroundColor="White"
-                    TextColor="{StaticResource Primary}"
-                    Command="{Binding AddVehicleCommand}"
-                    HorizontalOptions="End"
-                    VerticalOptions="Center"/>
-        </Grid>
+    <!-- Content -->
+    <RefreshView IsRefreshing="{Binding IsRefreshing}"
+                 Command="{Binding RefreshCommand}">
+        <ScrollView>
+            <StackLayout Padding="20">
+                <!-- Empty State with Centered Add Button -->
+                <StackLayout IsVisible="{Binding HasVehicles, Converter={StaticResource InvertedBoolConverter}}"
+                             Spacing="20"
+                             VerticalOptions="CenterAndExpand">
+                    <Label Text="🚗" 
+                           FontSize="72"
+                           HorizontalOptions="Center"/>
+                    <Label Text="No vehicles yet" 
+                           FontSize="24"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           Margin="0,20,0,10"/>
+                    <Label Text="Tap the + button to add your first vehicle" 
+                           FontSize="16"
+                           HorizontalOptions="Center"
+                           TextColor="Gray"
+                           Margin="0,0,0,20"/>
+                    <Button Text="+" 
+                            FontSize="32"
+                            WidthRequest="60"
+                            HeightRequest="60"
+                            CornerRadius="30"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            Command="{Binding AddVehicleCommand}"
+                            HorizontalOptions="Center"/>
+                </StackLayout>
 
-        <!-- Content -->
-        <RefreshView Grid.Row="1" 
-                     IsRefreshing="{Binding IsRefreshing}"
-                     Command="{Binding RefreshCommand}">
-            <ScrollView>
-                <StackLayout Padding="20">
-                    <!-- Empty State -->
-                    <StackLayout IsVisible="{Binding HasVehicles, Converter={StaticResource InvertedBoolConverter}}"
-                                 Padding="20"
-                                 VerticalOptions="CenterAndExpand">
-                        <Label Text="🚗" 
-                               FontSize="72"
-                               HorizontalOptions="Center"/>
-                        <Label Text="No vehicles yet" 
-                               FontSize="24"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"
-                               Margin="0,20,0,10"/>
-                        <Label Text="Tap the + button to add your first vehicle" 
-                               FontSize="16"
-                               HorizontalOptions="Center"
-                               TextColor="Gray"/>
-                    </StackLayout>
-
-                    <!-- Vehicles List -->
+                <!-- Vehicles List with Add Button at End -->
+                <StackLayout IsVisible="{Binding HasVehicles}"
+                             Spacing="0">
                     <CollectionView ItemsSource="{Binding Vehicles}"
-                                    IsVisible="{Binding HasVehicles}"
                                     SelectionMode="None">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:Vehicle">
                                 <Border Margin="0,0,0,15" 
-                                        Padding="15"
+                                        Padding="0"
                                         StrokeThickness="1"
                                         Stroke="LightGray"
                                         StrokeShape="RoundRectangle 10"
-                                        BackgroundColor="White">
+                                        BackgroundColor="White"
+                                        HeightRequest="120">
                                     <Border.Shadow>
                                         <Shadow Brush="Black" Opacity="0.1" Radius="10" Offset="0,2"/>
                                     </Border.Shadow>
@@ -71,38 +62,102 @@
                                                               CommandParameter="{Binding .}"/>
                                     </Border.GestureRecognizers>
                                     
-                                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
-                                        <!-- Vehicle Info -->
-                                        <Label Grid.Row="0" Grid.Column="0"
-                                               Text="{Binding DisplayName}"
-                                               FontSize="20"
-                                               FontAttributes="Bold"/>
+                                    <Grid>
+                                        <!-- Background Image -->
+                                        <Image Source="{Binding ImagePath}"
+                                               Aspect="AspectFill"
+                                               IsVisible="{Binding ImagePath, Converter={StaticResource IsNotNullConverter}}"/>
+                                        <!-- Dark overlay for text readability -->
+                                        <BoxView Color="Black"
+                                                 Opacity="0.5"
+                                                 IsVisible="{Binding ImagePath, Converter={StaticResource IsNotNullConverter}}"/>
                                         
-                                        <Label Grid.Row="1" Grid.Column="0"
-                                               Text="{Binding Make}"
-                                               FontSize="14"
-                                               TextColor="Gray"/>
-                                        
-                                        <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Spacing="10">
-                                            <Label Text="📍"
-                                                   FontSize="16"/>
-                                            <Label Text="{Binding CurrentMileage, StringFormat='{0:N0} miles'}"
-                                                   FontSize="16"/>
+                                        <!-- Content -->
+                                        <Grid Padding="15" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                                            <!-- Vehicle Info -->
+                                            <Label Grid.Row="0" Grid.Column="0"
+                                                   Text="{Binding DisplayName}"
+                                                   FontSize="20"
+                                                   FontAttributes="Bold">
+                                                <Label.Style>
+                                                    <Style TargetType="Label">
+                                                        <Setter Property="TextColor" Value="Black"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger TargetType="Label" Binding="{Binding ImagePath, Converter={StaticResource IsNotNullConverter}}" Value="True">
+                                                                <Setter Property="TextColor" Value="White"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Label.Style>
+                                            </Label>
+                                            
+                                            <Label Grid.Row="1" Grid.Column="0"
+                                                   Text="{Binding Make}"
+                                                   FontSize="14">
+                                                <Label.Style>
+                                                    <Style TargetType="Label">
+                                                        <Setter Property="TextColor" Value="Gray"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger TargetType="Label" Binding="{Binding ImagePath, Converter={StaticResource IsNotNullConverter}}" Value="True">
+                                                                <Setter Property="TextColor" Value="White"/>
+                                                                <Setter Property="Opacity" Value="0.9"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Label.Style>
+                                            </Label>
+                                            
+                                            <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Spacing="10">
+                                                <Label Text="{Binding CurrentMileage, StringFormat='{0:N0} miles'}"
+                                                       FontSize="16">
+                                                    <Label.Style>
+                                                        <Style TargetType="Label">
+                                                            <Setter Property="TextColor" Value="Black"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger TargetType="Label" Binding="{Binding ImagePath, Converter={StaticResource IsNotNullConverter}}" Value="True">
+                                                                    <Setter Property="TextColor" Value="White"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Label.Style>
+                                                </Label>
                                         </HorizontalStackLayout>
 
                                         <!-- Arrow Icon -->
                                         <Label Grid.RowSpan="3" Grid.Column="1"
                                                Text="›"
                                                FontSize="32"
-                                               TextColor="Gray"
-                                               VerticalOptions="Center"/>
+                                               VerticalOptions="Center">
+                                            <Label.Style>
+                                                <Style TargetType="Label">
+                                                    <Setter Property="TextColor" Value="Gray"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger TargetType="Label" Binding="{Binding ImagePath, Converter={StaticResource IsNotNullConverter}}" Value="True">
+                                                            <Setter Property="TextColor" Value="White"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Label.Style>
+                                        </Label>
+                                        </Grid>
                                     </Grid>
                                 </Border>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
+                    
+                    <!-- Add Vehicle Button at End of List -->
+                    <Button Text="+ Add Vehicle" 
+                            FontSize="18"
+                            Padding="15"
+                            Margin="0,10,0,20"
+                            CornerRadius="10"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"
+                            Command="{Binding AddVehicleCommand}"
+                            HorizontalOptions="Fill"/>
                 </StackLayout>
-            </ScrollView>
-        </RefreshView>
-    </Grid>
+            </StackLayout>
+        </ScrollView>
+    </RefreshView>
 </ContentPage>

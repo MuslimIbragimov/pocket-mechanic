@@ -67,7 +67,7 @@
 
                 <!-- Overdue Items -->
                 <StackLayout IsVisible="{Binding HasOverdueItems}">
-                    <Label Text="⚠️ Overdue Maintenance" 
+                    <Label Text="Overdue Maintenance" 
                            FontSize="20"
                            FontAttributes="Bold"
                            TextColor="Red"/>
@@ -95,7 +95,7 @@
 
                 <!-- Due Soon Items -->
                 <StackLayout IsVisible="{Binding HasDueSoonItems}">
-                    <Label Text="⚠️ Due Soon" 
+                    <Label Text="Due Soon" 
                            FontSize="20"
                            FontAttributes="Bold"
                            TextColor="Orange"/>
@@ -145,23 +145,33 @@
                                     IsVisible="{Binding HasMaintenanceHistory}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="models:MaintenanceRecord">
-                                <Border Margin="0,5" Padding="10" Stroke="LightGray" StrokeThickness="1">
-                                    <Border.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:VehicleDetailViewModel}}, Path=SelectMaintenanceCommand}"
-                                                              CommandParameter="{Binding .}"/>
-                                    </Border.GestureRecognizers>
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <StackLayout Grid.Column="0">
-                                            <Label Text="{Binding MaintenanceType}" FontAttributes="Bold"/>
-                                            <Label Text="{Binding DatePerformed, StringFormat='Performed: {0:MM/dd/yyyy}'}" 
-                                                   FontSize="12"/>
-                                            <Label Text="{Binding MileageAtService, StringFormat='At {0:N0} miles'}" 
-                                                   FontSize="12"
-                                                   TextColor="Gray"/>
-                                        </StackLayout>
-                                        <Label Grid.Column="1" Text="›" FontSize="24" TextColor="Gray" VerticalOptions="Center"/>
-                                    </Grid>
-                                </Border>
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems>
+                                            <SwipeItem Text="Delete"
+                                                       BackgroundColor="Red"
+                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:VehicleDetailViewModel}}, Path=DeleteMaintenanceCommand}"
+                                                       CommandParameter="{Binding .}"/>
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
+                                    <Border Margin="0,5" Padding="10" Stroke="LightGray" StrokeThickness="1">
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:VehicleDetailViewModel}}, Path=SelectMaintenanceCommand}"
+                                                                  CommandParameter="{Binding .}"/>
+                                        </Border.GestureRecognizers>
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackLayout Grid.Column="0">
+                                                <Label Text="{Binding MaintenanceType}" FontAttributes="Bold"/>
+                                                <Label Text="{Binding DatePerformed, StringFormat='Performed: {0:MM/dd/yyyy}'}" 
+                                                       FontSize="12"/>
+                                                <Label Text="{Binding MileageAtService, StringFormat='At {0:N0} miles'}" 
+                                                       FontSize="12"
+                                                       TextColor="Gray"/>
+                                            </StackLayout>
+                                            <Label Grid.Column="1" Text="›" FontSize="24" TextColor="Gray" VerticalOptions="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </SwipeView>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>

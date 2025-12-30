@@ -26,15 +26,40 @@ namespace PocketMechanic.Services
 
             _database = new SQLiteAsyncConnection(_databasePath);
             
-            // Create tables
+            // Create tables (with migration support)
             await _database.CreateTableAsync<Vehicle>();
             await _database.CreateTableAsync<MaintenanceRecord>();
             await _database.CreateTableAsync<MaintenanceType>();
+
+            // Apply migrations
+            await MigrateDatabaseAsync();
 
             // Seed predefined maintenance types
             await SeedMaintenanceTypesAsync();
 
             _initialized = true;
+        }
+
+        private async Task MigrateDatabaseAsync()
+        {
+            try
+            {
+                // Check if ImagePath column exists in Vehicle table
+                var query = "SELECT COUNT(*) FROM pragma_table_info('vehicles') WHERE name='ImagePath'";
+                var count = await _database.ExecuteScalarAsync<int>(query);
+                
+                // Add ImagePath column if it doesn't exist
+                if (count == 0)
+                {
+                    await _database.ExecuteAsync("ALTER TABLE vehicles ADD COLUMN ImagePath TEXT");
+                    System.Diagnostics.Debug.WriteLine("Added ImagePath column to vehicles table");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Migration error: {ex.Message}");
+                // Don't throw - let the app continue even if migration fails
+            }
         }
 
         private async Task SeedMaintenanceTypesAsync()
@@ -44,7 +69,15 @@ namespace PocketMechanic.Services
             {
                 foreach (var type in MaintenanceType.PredefinedTypes)
                 {
-                    await _database.InsertAsync(type);
+                    try
+                    {
+                        await _database.InsertAsync(type);
+                    }
+                    catch (SQLiteException ex) when (ex.Message.Contains("UNIQUE constraint"))
+                    {
+                        // Type already exists, skip it
+                        continue;
+                    }
                 }
             }
         }

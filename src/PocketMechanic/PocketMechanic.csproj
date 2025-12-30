@@ -13,6 +13,11 @@
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
+  <!-- Fast deployment for Debug, embedded for Release -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Maui" Version="11.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />

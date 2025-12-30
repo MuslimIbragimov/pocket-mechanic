@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using PocketMechanic.Models;
 using PocketMechanic.Services;
@@ -63,7 +64,8 @@ namespace PocketMechanic.ViewModels
 
         partial void OnVehicleIdChanged(int value)
         {
-            if (value > 0)
+            // Don't auto-load if we're in edit mode - LoadMaintenanceAsync will handle it
+            if (value > 0 && !IsEditMode)
             {
                 Task.Run(async () => await LoadVehicleAndTypesAsync());
             }
@@ -116,16 +118,23 @@ namespace PocketMechanic.ViewModels
             if (record != null)
             {
                 VehicleId = record.VehicleId;
+                
+                // Ensure vehicle and types are loaded first
                 await LoadVehicleAndTypesAsync();
 
-                var type = MaintenanceTypes.FirstOrDefault(t => t.Name == record.MaintenanceType);
-                SelectedMaintenanceType = type;
-                DatePerformed = record.DatePerformed;
-                MileageAtService = record.MileageAtService;
-                NextDueDate = record.NextDueDate;
-                NextDueMileage = record.NextDueMileage;
-                Notes = record.Notes;
-                Cost = record.Cost;
+                // Now match the maintenance type on main thread
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    var type = MaintenanceTypes.FirstOrDefault(t => t.Name == record.MaintenanceType);
+                    SelectedMaintenanceType = type;
+                    
+                    DatePerformed = record.DatePerformed;
+                    MileageAtService = record.MileageAtService;
+                    NextDueDate = record.NextDueDate;
+                    NextDueMileage = record.NextDueMileage;
+                    Notes = record.Notes;
+                    Cost = record.Cost;
+                });
             }
         }
 

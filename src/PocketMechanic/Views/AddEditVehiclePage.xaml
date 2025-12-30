@@ -2,23 +2,161 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:PocketMechanic.ViewModels"
+             xmlns:models="clr-namespace:PocketMechanic.Models"
              x:Class="PocketMechanic.Views.AddEditVehiclePage"
              x:DataType="viewmodels:AddEditVehicleViewModel"
              Title="{Binding PageTitle}">
 
-    <ScrollView>
+    <Grid>
+        <ScrollView>
         <StackLayout Padding="20" Spacing="15">
+            <!-- Vehicle Image -->
+            <Label Text="Vehicle Photo (Optional)" FontAttributes="Bold"/>
+            <Grid>
+                <Border StrokeThickness="1"
+                        Stroke="{StaticResource Gray200}"
+                        StrokeShape="RoundRectangle 10"
+                        HeightRequest="200"
+                        BackgroundColor="{StaticResource Gray100}">
+                    <Grid>
+                        <!-- Show selected image -->
+                        <Image Source="{Binding ImagePath}"
+                               Aspect="AspectFill"
+                               IsVisible="{Binding ImagePath, Converter={StaticResource IsNotNullConverter}}"/>
+                        <!-- Show placeholder -->
+                        <StackLayout VerticalOptions="Center"
+                                     HorizontalOptions="Center"
+                                     IsVisible="{Binding ImagePath, Converter={StaticResource IsNullConverter}}">
+                            <Label Text="+"
+                                   FontSize="48"
+                                   TextColor="Gray"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Tap to add photo"
+                                   TextColor="Gray"
+                                   HorizontalOptions="Center"/>
+                        </StackLayout>
+                    </Grid>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding PickImageCommand}"/>
+                    </Border.GestureRecognizers>
+                </Border>
+            </Grid>
+            
+            <!-- Year -->
+            <Label Text="Year *" FontAttributes="Bold"/>
+            <Picker ItemsSource="{Binding Years}" 
+                    SelectedIndex="{Binding SelectedYearIndex}"
+                    Title="Select Year"/>
+
             <!-- Make -->
             <Label Text="Make *" FontAttributes="Bold"/>
-            <Entry Text="{Binding Make}" Placeholder="e.g., Toyota"/>
+            
+            <!-- Selected Make Display -->
+            <Border StrokeThickness="1"
+                    Stroke="{StaticResource Gray200}"
+                    StrokeShape="RoundRectangle 5"
+                    BackgroundColor="White"
+                    Padding="10"
+                    IsVisible="{Binding IsLoadingMakes, Converter={StaticResource InvertedBoolConverter}}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenMakePickerCommand}"/>
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="40,*,Auto" ColumnSpacing="10">
+                    <!-- Logo or Initial -->
+                    <Border Grid.Column="0"
+                            WidthRequest="40"
+                            HeightRequest="40"
+                            StrokeThickness="0"
+                            BackgroundColor="{StaticResource Gray100}"
+                            StrokeShape="RoundRectangle 20"
+                            IsVisible="{Binding SelectedMake, Converter={StaticResource IsNotNullConverter}}">
+                        <Grid>
+                            <!-- Show logo if available -->
+                            <Image Source="{Binding SelectedMake.LogoUrl}"
+                                   Aspect="AspectFit"
+                                   IsVisible="{Binding SelectedMake.LogoUrl, Converter={StaticResource IsNotNullConverter}}"
+                                   Margin="5"/>
+                            <!-- Show initial if no logo -->
+                            <Label Text="{Binding SelectedMake.Initial}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource Primary}"
+                                   IsVisible="{Binding SelectedMake.LogoUrl, Converter={StaticResource IsNullConverter}}"/>
+                        </Grid>
+                    </Border>
+                    <!-- Make name or placeholder -->
+                    <Label Grid.Column="1"
+                           Text="{Binding SelectedMake.Name}"
+                           VerticalOptions="Center"
+                           FontSize="16"
+                           TextColor="Black"
+                           IsVisible="{Binding SelectedMake, Converter={StaticResource IsNotNullConverter}}"/>
+                    <Label Grid.Column="1"
+                           Text="Select Make"
+                           VerticalOptions="Center"
+                           FontSize="16"
+                           TextColor="Gray"
+                           IsVisible="{Binding SelectedMake, Converter={StaticResource IsNullConverter}}"/>
+                    <!-- Dropdown arrow -->
+                    <Label Grid.Column="2"
+                           Text="v"
+                           VerticalOptions="Center"
+                           FontSize="12"
+                           TextColor="Gray"/>
+                </Grid>
+            </Border>
+            <ActivityIndicator IsRunning="{Binding IsLoadingMakes}" 
+                               IsVisible="{Binding IsLoadingMakes}"
+                               HorizontalOptions="Center"
+                               Margin="0,20"/>
+            
+            <!-- Can't find your make link -->
+            <Label HorizontalOptions="End">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Can't find your make? " 
+                              FontSize="12"
+                              TextColor="Gray"/>
+                        <Span Text="Change filter"
+                              FontSize="12"
+                              TextColor="{StaticResource Primary}"
+                              TextDecorations="Underline">
+                            <Span.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChangeRegionCommand}"/>
+                            </Span.GestureRecognizers>
+                        </Span>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
 
             <!-- Model -->
             <Label Text="Model *" FontAttributes="Bold"/>
-            <Entry Text="{Binding Model}" Placeholder="e.g., Camry"/>
-
-            <!-- Year -->
-            <Label Text="Year *" FontAttributes="Bold"/>
-            <Entry Text="{Binding Year}" Placeholder="e.g., 2020" Keyboard="Numeric"/>
+            <Grid>
+                <!-- Show picker when models are available -->
+                <Picker ItemsSource="{Binding Models}" 
+                        SelectedIndex="{Binding SelectedModelIndex}"
+                        Title="Select Model"
+                        IsEnabled="{Binding Models.Count}"
+                        IsVisible="{Binding ShowModelPicker}"/>
+                
+                <!-- Show entry when no models available (API doesn't have data for this make) -->
+                <Entry Text="{Binding Model}" 
+                       Placeholder="Enter model manually"
+                       IsVisible="{Binding ShowModelEntry}"/>
+                
+                <ActivityIndicator IsRunning="{Binding IsLoadingModels}" 
+                                   IsVisible="{Binding IsLoadingModels}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+            </Grid>
+            
+            <!-- Info message when manual entry is shown -->
+            <Label Text="No models found in database - please enter manually" 
+                   FontSize="12"
+                   TextColor="Orange"
+                   IsVisible="{Binding ShowModelEntry}"/>
 
             <!-- VIN -->
             <Label Text="VIN (Optional)" FontAttributes="Bold"/>
@@ -57,4 +195,75 @@
             </Grid>
         </StackLayout>
     </ScrollView>
+        
+        <!-- Make Picker Popup Overlay -->
+        <Grid IsVisible="{Binding ShowMakePicker}"
+              BackgroundColor="#80000000">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CloseMakePickerCommand}"/>
+            </Grid.GestureRecognizers>
+            
+            <!-- Popup Content -->
+            <Border VerticalOptions="Center"
+                    Margin="20"
+                    BackgroundColor="White"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 10"
+                    MaximumHeightRequest="500">
+                <Border.Shadow>
+                    <Shadow Brush="Black" Opacity="0.3" Radius="20" Offset="0,5"/>
+                </Border.Shadow>
+                <Grid RowDefinitions="Auto,*" Padding="0">
+                    <!-- Header -->
+                    <Grid Grid.Row="0" Padding="15" BackgroundColor="{StaticResource Primary}" ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Select Make" FontSize="18" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
+                        <Button Grid.Column="1" Text="X" FontSize="20" TextColor="White" BackgroundColor="Transparent" 
+                                Command="{Binding CloseMakePickerCommand}" WidthRequest="40" HeightRequest="40"/>
+                    </Grid>
+                    
+                    <!-- Makes List -->
+                    <CollectionView Grid.Row="1" ItemsSource="{Binding Makes}"
+                                    SelectionMode="Single"
+                                    SelectionChanged="OnMakeSelected"
+                                    Margin="0">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:MakeItem">
+                                <Grid Padding="15,10" ColumnDefinitions="40,*" ColumnSpacing="10" BackgroundColor="White">
+                                    <!-- Logo or Initial -->
+                                    <Border Grid.Column="0"
+                                            WidthRequest="40"
+                                            HeightRequest="40"
+                                            StrokeThickness="0"
+                                            BackgroundColor="{StaticResource Gray100}"
+                                            StrokeShape="RoundRectangle 20">
+                                        <Grid>
+                                            <!-- Show logo if available -->
+                                            <Image Source="{Binding LogoUrl}"
+                                                   Aspect="AspectFit"
+                                                   IsVisible="{Binding LogoUrl, Converter={StaticResource IsNotNullConverter}}"
+                                                   Margin="5"/>
+                                            <!-- Show initial if no logo -->
+                                            <Label Text="{Binding Initial}"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{StaticResource Primary}"
+                                                   IsVisible="{Binding LogoUrl, Converter={StaticResource IsNullConverter}}"/>
+                                        </Grid>
+                                    </Border>
+                                    <!-- Make name -->
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Name}"
+                                           VerticalOptions="Center"
+                                           FontSize="16"
+                                           TextColor="Black"/>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
 </ContentPage>

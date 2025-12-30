@@ -31,6 +31,9 @@ namespace PocketMechanic.Models
         [MaxLength(100)]
         public string Nickname { get; set; }
 
+        [MaxLength(500)]
+        public string ImagePath { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

@@ -25,6 +25,7 @@ namespace PocketMechanic
 
             // Register Services
             builder.Services.AddSingleton<DatabaseService>();
+            builder.Services.AddSingleton<VehicleInfoService>();
 
             // Register ViewModels
             builder.Services.AddTransient<GarageViewModel>();

@@ -107,7 +107,7 @@ namespace PocketMechanic.ViewModels
             if (record == null)
                 return;
 
-            await Shell.Current.GoToAsync($"maintenancedetail?maintenanceId={record.Id}");
+            await Shell.Current.GoToAsync($"addmaintenance?maintenanceId={record.Id}");
         }
 
         [RelayCommand]
@@ -150,6 +150,25 @@ namespace PocketMechanic.ViewModels
         private async Task RefreshAsync()
         {
             await LoadVehicleAsync();
+        }
+
+        [RelayCommand]
+        private async Task DeleteMaintenanceAsync(MaintenanceRecord record)
+        {
+            if (record == null)
+                return;
+
+            var result = await Shell.Current.DisplayAlert(
+                "Delete Maintenance",
+                $"Are you sure you want to delete this {record.MaintenanceType} record?",
+                "Delete",
+                "Cancel");
+
+            if (result)
+            {
+                await _databaseService.DeleteMaintenanceRecordAsync(record);
+                await LoadMaintenanceRecordsAsync();
+            }
         }
     }
 }

@@ -9,10 +9,14 @@
             <Color x:Key="Primary">#2196F3</Color>
             <Color x:Key="Secondary">#FFC107</Color>
             <Color x:Key="Accent">#FF5722</Color>
+            <Color x:Key="Gray100">#F5F5F5</Color>
+            <Color x:Key="Gray200">#EEEEEE</Color>
             
             <!-- Converters -->
             <converters:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
             <converters:StringNotNullOrEmptyConverter x:Key="StringNotNullOrEmptyConverter"/>
+            <converters:IsNullConverter x:Key="IsNullConverter"/>
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
